@@ -15,19 +15,11 @@ pipeline {
         }
       stage ('Build') {
           steps {
-            sh 'mvn clean install'           
+            sh 'mvn clean install'
+            sh "chmod +x -R ${env.WORKSPACE}"
+            sh '/var/lib/jenkins/workspace/reactapp/deploy1.sh'           
             }
       }
-    // Building Docker images
-    stages {
-        stage("Build") {
-            steps {
-                sh "chmod +x -R ${env.WORKSPACE}"
-                sh '/var/lib/jenkins/workspace/reactapp/deploy1.sh'
-        }
-      }
-    }
-   
 
        stage('K8S Deploy') {
         steps{   
