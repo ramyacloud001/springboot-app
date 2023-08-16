@@ -19,7 +19,7 @@ pipeline {
             }
       }
     // Building Docker images
-      stages {
+    stages {
         stage("Build") {
             steps {
                 sh "chmod +x -R ${env.WORKSPACE}"
