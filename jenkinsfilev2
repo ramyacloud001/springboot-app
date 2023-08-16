@@ -1,0 +1,43 @@
+pipeline {
+   tools {
+        maven 'Maven3'
+    }
+    agent any
+    environment {
+        registry = "848902111651.dkr.ecr.us-west-1.amazonaws.com/my-docker-repo"
+    }
+   
+    stages {
+        stage('Cloning Git') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/akannan1087/springboot-app']]])     
+            }
+        }
+      stage ('Build') {
+          steps {
+            sh 'mvn clean install'           
+            }
+      }
+    // Building Docker images
+        stages {
+        stage("Build") {
+            steps {
+                sh "chmod +x -R ${env.WORKSPACE}"
+                sh '/var/lib/jenkins/workspace/reactapp/deploy1.sh'
+        }
+      }
+    }
+   
+
+       stage('K8S Deploy') {
+        steps{   
+            script {
+                withKubeConfig([credentialsId: 'K8S', serverUrl: '']) {
+                sh ('kubectl apply -f  eks-deploy-k8s.yaml')
+                }
+            }
+        }
+       }
+    }
+}
+
