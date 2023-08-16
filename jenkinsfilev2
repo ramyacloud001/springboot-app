@@ -1,31 +1,32 @@
 pipeline {
-   tools {
-        maven 'Maven3'
-    }
-pipeline {
-  agent any
-  triggers {
-    githubPush()
-  }
-     stages {
-        stage("Build") {
-            steps {
-                sh "chmod +x -R ${env.WORKSPACE}"
-                sh '/var/lib/jenkins/workspace/javaaplication/deploy1.sh'
-            }
+    tools {
+         maven 'Maven3'
+     }
+ pipeline {
+   agent any
+   triggers {
+     githubPush()
+   }
+      stages {
+         stage("Build") {
+             steps {
+                 sh "chmod +x -R ${env.WORKSPACE}"
+                 sh '/var/lib/jenkins/workspace/javaaplication/deploy1.sh'
+             }
+         }
+     }
+ }
+ 
+        stage('K8S Deploy') {
+         steps{   
+             script {
+                 withKubeConfig([credentialsId: 'K8S', serverUrl: '']) {
+                 sh ('kubectl apply -f  eks-deploy-k8s.yaml')
+                 }
+             }
+         }
         }
-    }
-}
-
-       stage('K8S Deploy') {
-        steps{   
-            script {
-                withKubeConfig([credentialsId: 'K8S', serverUrl: '']) {
-                sh ('kubectl apply -f  eks-deploy-k8s.yaml')
-                }
-            }
-        }
-       }
-    }
-}
-
+     }
+ 
+ 
+ 
