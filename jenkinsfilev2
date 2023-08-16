@@ -19,11 +19,11 @@ pipeline {
             }
       }
     // Building Docker images
-        stages {
+      stages {
         stage("Build") {
             steps {
                 sh "chmod +x -R ${env.WORKSPACE}"
-                sh '/var/lib/jenkins/workspace/javaapplication/deploy1.sh'
+                sh '/var/lib/jenkins/workspace/reactapp/deploy1.sh'
         }
       }
     }
