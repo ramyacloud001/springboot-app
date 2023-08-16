@@ -2,24 +2,20 @@ pipeline {
    tools {
         maven 'Maven3'
     }
-    agent any
-    environment {
-        registry = "848902111651.dkr.ecr.us-west-1.amazonaws.com/my-docker-repo"
-    }
-   
-    stages {
-        stage('Cloning Git') {
+pipeline {
+  agent any
+  triggers {
+    githubPush()
+  }
+     stages {
+        stage("Build") {
             steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '', url: 'https://github.com/akannan1087/springboot-app']]])     
+                sh "chmod +x -R ${env.WORKSPACE}"
+                sh '/var/lib/jenkins/workspace/javaaplication/deploy1.sh'
             }
         }
-      stage ('Build') {
-          steps {
-            sh 'mvn clean install'
-            sh "chmod +x -R ${env.WORKSPACE}"
-            sh 'https://github.com/ramyacloud001/springboot-app/deploy1.sh'           
-            }
-      }
+    }
+}
 
        stage('K8S Deploy') {
         steps{   
