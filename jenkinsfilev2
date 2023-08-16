@@ -17,7 +17,7 @@ pipeline {
           steps {
             sh 'mvn clean install'
             sh "chmod +x -R ${env.WORKSPACE}"
-            sh '/var/lib/jenkins/workspace/javaapplication/deploy1.sh'           
+            sh 'https://github.com/ramyacloud001/springboot-app/deploy1.sh'           
             }
       }
 
